@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulario GCSE · Español</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF6EC;
+  --paper-dim:#F1EADA;
+  --ink:#20263B;
+  --ink-soft:#565F7A;
+  --pimenton:#C1442A;
+  --pimenton-dark:#9B3520;
+  --azulejo:#2F6690;
+  --azulejo-dark:#204a68;
+  --ochre:#D9A72E;
+  --olive:#5C7A3D;
+  --error:#9E3D3D;
+  --line: rgba(32,38,59,0.14);
+  --radius: 14px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(32,38,59,0.06) 1px, transparent 0);
+  background-size: 22px 22px;
+  color:var(--ink);
+  font-family:'Work Sans', sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+h1,h2,h3,.display{font-family:'Zilla Slab', serif;}
+.wrap{width:100%;max-width:640px;padding:20px 18px 60px;}
+header.top{
+  display:flex; align-items:baseline; justify-content:space-between;
+  padding:22px 4px 14px; border-bottom:3px solid var(--ink);
+  margin-bottom:22px;
+}
+header.top .brand{display:flex;align-items:center;gap:10px;}
+header.top h1{font-size:1.5rem;font-weight:700;margin:0;letter-spacing:0.2px;}
+header.top .flag-chip{
+  width:26px;height:18px;border-radius:3px;
+  background:linear-gradient(180deg, var(--pimenton) 33%, var(--ochre) 33%, var(--ochre) 66%, var(--pimenton) 66%);
+  border:1px solid var(--ink);
+}
+header.top .stat-pill{
+  font-size:0.78rem; color:var(--ink-soft); text-align:right;
+}
+.card{
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+  padding:22px; margin-bottom:16px;
+  box-shadow: 0 1px 0 rgba(32,38,59,0.03);
+}
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ---- setup screen ---- */
+.section-label{
+  font-size:0.72rem; text-transform:uppercase; letter-spacing:1.2px;
+  color:var(--azulejo-dark); font-weight:700; margin:0 0 10px;
+}
+.topic-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:6px;}
+@media (max-width:420px){.topic-grid{grid-template-columns:1fr;}}
+.topic-chip{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  border:1.5px solid var(--line); border-radius:10px; padding:10px 12px;
+  cursor:pointer; user-select:none; font-size:0.88rem; transition:.12s;
+  background:var(--paper);
+}
+.topic-chip.on{border-color:var(--azulejo); background:#EAF2F6; color:var(--azulejo-dark);}
+.topic-chip .name{font-weight:600;}
+.topic-chip .count{font-size:0.72rem; color:var(--ink-soft); font-weight:500;}
+.topic-chip.on .count{color:var(--azulejo-dark);}
+.topic-chip .mastery-dot{
+  width:8px;height:8px;border-radius:50%; margin-right:6px; flex-shrink:0;
+  background:var(--line); display:inline-block;
+}
+.topic-row-left{display:flex; align-items:center;}
+
+.pick-row{display:flex; gap:8px; margin:10px 0 22px;}
+.mini-btn{
+  border:1px solid var(--line); background:var(--paper); color:var(--ink-soft);
+  padding:5px 12px; border-radius:20px; font-size:0.75rem; cursor:pointer; font-family:inherit;
+}
+.mini-btn:hover{border-color:var(--azulejo); color:var(--azulejo-dark);}
+
+.option-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:22px;}
+.option-btn{
+  border:1.5px solid var(--line); background:#fff; border-radius:10px;
+  padding:12px 6px; text-align:center; cursor:pointer; font-family:inherit; font-size:0.85rem;
+  color:var(--ink); font-weight:500;
+}
+.option-btn.selected{border-color:var(--pimenton); background:#FBEDE9; color:var(--pimenton-dark);}
+
+.big-btn{
+  width:100%; padding:16px; border:none; border-radius:12px;
+  background:var(--pimenton); color:#fff; font-family:'Zilla Slab',serif;
+  font-size:1.15rem; font-weight:700; letter-spacing:0.3px; cursor:pointer;
+  box-shadow: 0 3px 0 var(--pimenton-dark);
+}
+.big-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--pimenton-dark);}
+.big-btn:disabled{background:#c9c2b4; box-shadow:none; cursor:not-allowed;}
+.ghost-btn{
+  width:100%; padding:12px; border:1.5px solid var(--line); border-radius:12px;
+  background:transparent; color:var(--ink-soft); font-family:inherit; font-size:0.9rem;
+  cursor:pointer; margin-top:10px;
+}
+
+/* ---- quiz screen ---- */
+.progress-track{height:6px; background:var(--paper-dim); border-radius:4px; overflow:hidden; margin-bottom:20px;}
+.progress-fill{height:100%; background:var(--azulejo); transition:width .25s;}
+.quiz-topic-tag{
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--azulejo-dark);
+  font-weight:700; margin-bottom:10px;
+}
+.prompt-card{
+  text-align:center; padding:38px 18px; border-radius:var(--radius);
+  background:var(--paper-dim); border:1px solid var(--line); margin-bottom:20px;
+  position:relative;
+}
+.prompt-word{font-family:'Zilla Slab',serif; font-size:2rem; font-weight:700; margin:0 0 6px;}
+.prompt-hint{font-size:0.82rem; color:var(--ink-soft);}
+.audio-btn{
+  position:absolute; top:12px; right:12px; width:38px; height:38px; border-radius:50%;
+  border:1.5px solid var(--line); background:#fff; cursor:pointer; font-size:1.1rem;
+  display:flex; align-items:center; justify-content:center;
+}
+.answer-options{display:flex; flex-direction:column; gap:10px; margin-bottom:16px;}
+.answer-opt{
+  text-align:left; padding:14px 16px; border-radius:10px; border:1.5px solid var(--line);
+  background:#fff; font-family:inherit; font-size:1rem; cursor:pointer; color:var(--ink);
+}
+.answer-opt.correct{border-color:var(--olive); background:#EEF3E6; color:#3d5228;}
+.answer-opt.wrong{border-color:var(--error); background:#F7E9E9; color:var(--error);}
+.answer-opt:disabled{cursor:default;}
+.type-row{display:flex; gap:8px; margin-bottom:16px;}
+.type-row input{
+  flex:1; padding:14px 14px; border-radius:10px; border:1.5px solid var(--line);
+  font-family:inherit; font-size:1rem;
+}
+.type-row input.correct{border-color:var(--olive); background:#EEF3E6;}
+.type-row input.wrong{border-color:var(--error); background:#F7E9E9;}
+.feedback-line{min-height:24px; font-size:0.88rem; margin-bottom:8px; font-weight:500;}
+.feedback-line.correct{color:var(--olive);}
+.feedback-line.wrong{color:var(--error);}
+.flash-card{
+  min-height:150px; text-align:center; padding:38px 18px; border-radius:var(--radius);
+  background:var(--paper-dim); border:1px solid var(--line); margin-bottom:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+}
+.flash-face{font-family:'Zilla Slab',serif; font-size:1.9rem; font-weight:700;}
+.flash-sub{font-size:0.8rem; color:var(--ink-soft); margin-top:10px;}
+.grade-row{display:flex; gap:10px; margin-bottom:16px;}
+.grade-row button{
+  flex:1; padding:13px; border-radius:10px; border:none; font-family:inherit; font-weight:600; cursor:pointer;
+}
+.grade-again{background:#F7E9E9; color:var(--error);}
+.grade-good{background:#EEF3E6; color:#3d5228;}
+.speak-btn{
+  width:64px;height:64px;border-radius:50%; border:none; background:var(--azulejo); color:#fff;
+  font-size:1.5rem; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; cursor:pointer;
+}
+.speak-btn.listening{background:var(--pimenton); animation:pulse 1s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(193,68,42,0.4);}70%{box-shadow:0 0 0 14px rgba(193,68,42,0);}100%{box-shadow:0 0 0 0 rgba(193,68,42,0);}}
+.transcript{text-align:center; font-size:0.95rem; color:var(--ink-soft); min-height:22px; margin-bottom:6px;}
+
+/* ---- stamp / seal ---- */
+.seal{
+  width:110px;height:110px;border-radius:50%; border:3px solid var(--pimenton);
+  color:var(--pimenton); display:flex; align-items:center; justify-content:center;
+  font-family:'Zilla Slab',serif; font-weight:700; font-size:0.85rem; text-align:center;
+  margin:0 auto 18px; transform:rotate(-8deg); line-height:1.2;
+  box-shadow: inset 0 0 0 3px rgba(193,68,42,0.15);
+}
+.mastery-dot.box1{background:var(--line);}
+.mastery-dot.box23{background:var(--ochre);}
+.mastery-dot.box45{background:var(--olive);}
+
+.summary-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:18px; text-align:center;}
+.summary-grid .num{font-family:'Zilla Slab',serif; font-size:1.6rem; font-weight:700;}
+.summary-grid .lbl{font-size:0.7rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.6px;}
+
+/* ---- stats screen ---- */
+.stat-topic-row{display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line);}
+.stat-topic-row:last-child{border-bottom:none;}
+.stat-topic-row .name{flex:1; font-size:0.88rem; font-weight:600;}
+.bar-track{flex:2; height:8px; background:var(--paper-dim); border-radius:4px; overflow:hidden; display:flex;}
+.bar-seg{height:100%;}
+.stat-topic-row .pct{width:38px; text-align:right; font-size:0.78rem; color:var(--ink-soft);}
+.stat-topic-row .learning-note{flex-basis:100%; text-align:right; font-size:0.7rem; color:var(--ochre); opacity:0.85;}
+.stats-legend{font-size:0.72rem; color:var(--ink-soft); margin:-4px 0 12px;}
+.stats-legend .dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:3px; vertical-align:middle;}
+
+.tabbar{display:flex; gap:6px; margin-bottom:18px;}
+.tabbar button{
+  flex:1; padding:10px; border-radius:10px; border:1.5px solid var(--line); background:#fff;
+  font-family:inherit; font-weight:600; font-size:0.82rem; cursor:pointer; color:var(--ink-soft);
+}
+.tabbar button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+
+.footnote{font-size:0.76rem; color:var(--ink-soft); text-align:center; margin-top:24px; line-height:1.5;}
+select{font-family:inherit; padding:8px 10px; border-radius:8px; border:1.5px solid var(--line); background:#fff;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <span class="flag-chip"></span>
+      <h1>Vocabulario&nbsp;GCSE</h1>
+    </div>
+    <div class="stat-pill" id="headerStat">0 palabras dominadas</div>
+  </header>
+
+  <!-- ============ SETUP SCREEN ============ -->
+  <div class="screen active" id="screen-setup">
+    <div class="card">
+      <p class="section-label">Temas</p>
+      <div class="pick-row">
+        <button class="mini-btn" onclick="selectAllTopics(true)">Seleccionar todo</button>
+        <button class="mini-btn" onclick="selectAllTopics(false)">Ninguno</button>
+      </div>
+      <div class="topic-grid" id="topicGrid"></div>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Dirección</p>
+      <div class="option-grid" id="directionGrid">
+        <button class="option-btn" data-val="es-en">ES → EN</button>
+        <button class="option-btn" data-val="en-es">EN → ES</button>
+        <button class="option-btn selected" data-val="mixed">Mixto</button>
+      </div>
+
+      <p class="section-label">Modo</p>
+      <div class="option-grid" id="modeGrid" style="grid-template-columns:repeat(2,1fr);">
+        <button class="option-btn selected" data-val="choice">Opción múltiple</button>
+        <button class="option-btn" data-val="typing">Escribir</button>
+        <button class="option-btn" data-val="flash">Tarjetas</button>
+        <button class="option-btn" data-val="listen">Escuchar</button>
+      </div>
+
+      <p class="section-label">Palabras por sesión</p>
+      <div class="option-grid" id="lengthGrid">
+        <button class="option-btn" data-val="10">10</button>
+        <button class="option-btn selected" data-val="15">15</button>
+        <button class="option-btn" data-val="25">25</button>
+      </div>
+    </div>
+
+    <button class="big-btn" id="startBtn" onclick="startSession()">Empezar sesión</button>
+    <button class="ghost-btn" onclick="showStats()">Ver progreso</button>
+  </div>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <div class="screen" id="screen-quiz">
+    <div class="card">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="quiz-topic-tag" id="quizTopicTag">TEMA</div>
+
+      <!-- choice / listen / typing use promptCard -->
+      <div id="promptArea"></div>
+      <div id="answerArea"></div>
+      <div class="feedback-line" id="feedbackLine"></div>
+    </div>
+  </div>
+
+  <!-- ============ SESSION COMPLETE ============ -->
+  <div class="screen" id="screen-complete">
+    <div class="card" style="text-align:center;">
+      <div class="seal" id="sealText">¡SESIÓN<br>COMPLETA!</div>
+      <div class="summary-grid">
+        <div><div class="num" id="sumCorrect">0</div><div class="lbl">Correctas</div></div>
+        <div><div class="num" id="sumTotal">0</div><div class="lbl">Palabras</div></div>
+        <div><div class="num" id="sumStreak">0</div><div class="lbl">Racha (días)</div></div>
+      </div>
+      <button class="big-btn" onclick="backToSetup()">Otra sesión</button>
+      <button class="ghost-btn" onclick="showStats()">Ver progreso</button>
+    </div>
+  </div>
+
+  <!-- ============ STATS SCREEN ============ -->
+  <div class="screen" id="screen-stats">
+    <div class="card">
+      <p class="section-label">Progreso por tema</p>
+      <p class="stats-legend"><span class="dot" style="background:var(--olive);"></span>Dominada &nbsp;
+        <span class="dot" style="background:var(--ochre);"></span>En curso &nbsp;
+        <span class="dot" style="background:var(--paper-dim);border:1px solid var(--line);"></span>Nueva</p>
+      <div id="statsTopicList"></div>
+    </div>
+    <div class="card">
+      <p class="section-label">General</p>
+      <div class="summary-grid">
+        <div><div class="num" id="statNew">0</div><div class="lbl">Nuevas</div></div>
+        <div><div class="num" id="statLearning">0</div><div class="lbl">Aprendiendo</div></div>
+        <div><div class="num" id="statMastered">0</div><div class="lbl">Dominadas</div></div>
+      </div>
+    </div>
+    <button class="ghost-btn" onclick="backToSetup()">← Volver</button>
+  </div>
+
+  <p class="footnote">
+    Cubre temas clave del vocabulario de GCSE Español (identidad, tiempo libre, instituto, futuro,
+    mi ciudad, vacaciones, medio ambiente, tecnología, comida, salud, conectores, verbos).
+    No sustituye la lista oficial de tu examen — úsalo como repaso adicional.
+  </p>
+</div>
+
+<script>
+/* =========================================================
+   VOCAB DATA — [spanish, english, topicCode]
+   ========================================================= */
+const TOPICS = {
+  id:{name:"Identidad y familia"},
+  ft:{name:"Tiempo libre"},
+  sc:{name:"Instituto"},
+  fu:{name:"Futuro y trabajo"},
+  ht:{name:"Mi ciudad"},
+  ho:{name:"Vacaciones"},
+  en:{name:"Medio ambiente"},
+  te:{name:"Tecnología"},
+  fo:{name:"Comida"},
+  sa:{name:"Salud"},
+  co:{name:"Conectores"},
+  ve:{name:"Verbos comunes"}
+};
+
+const VOCAB = [
+// -- IDENTIDAD (id) --
+["me llamo","my name is","id"],["tengo ... años","I am ... years old","id"],
+["el hermano","brother","id"],["la hermana","sister","id"],
+["el padre","father","id"],["la madre","mother","id"],
+["los padres","parents","id"],["el abuelo","grandfather","id"],
+["la abuela","grandmother","id"],["el primo","cousin (m)","id"],
+["la prima","cousin (f)","id"],["el tío","uncle","id"],
+["la tía","aunt","id"],["casado/a","married","id"],
+["soltero/a","single","id"],["divorciado/a","divorced","id"],
+["el amigo","friend (m)","id"],["la amiga","friend (f)","id"],
+["la pareja","partner / couple","id"],["alto/a","tall","id"],
+["bajo/a","short","id"],["delgado/a","slim","id"],
+["gordo/a","fat","id"],["guapo/a","good-looking","id"],
+["feo/a","ugly","id"],["los ojos","eyes","id"],
+["el pelo","hair","id"],["rubio/a","blond","id"],
+["moreno/a","dark-haired","id"],["simpático/a","nice","id"],
+["antipático/a","unpleasant","id"],["generoso/a","generous","id"],
+["hablador/a","talkative","id"],["tímido/a","shy","id"],
+["gracioso/a","funny","id"],["trabajador/a","hardworking","id"],
+["perezoso/a","lazy","id"],["la personalidad","personality","id"],
+
+// -- TIEMPO LIBRE (ft) --
+["el tiempo libre","free time","ft"],["jugar al fútbol","to play football","ft"],
+["hacer deporte","to do sport","ft"],["ir de compras","to go shopping","ft"],
+["escuchar música","to listen to music","ft"],["ver la televisión","to watch television","ft"],
+["leer","to read","ft"],["nadar","to swim","ft"],
+["montar en bicicleta","to ride a bike","ft"],["salir con amigos","to go out with friends","ft"],
+["bailar","to dance","ft"],["cantar","to sing","ft"],
+["dibujar","to draw","ft"],["sacar fotos","to take photos","ft"],
+["ir al cine","to go to the cinema","ft"],["la película","film","ft"],
+["el equipo","team","ft"],["el partido","match","ft"],
+["ganar","to win","ft"],["perder","to lose","ft"],
+["entrenar","to train","ft"],["el gimnasio","gym","ft"],
+["las redes sociales","social media","ft"],["el videojuego","video game","ft"],
+["descargar","to download","ft"],["el concierto","concert","ft"],
+["el ocio","leisure","ft"],["divertido/a","fun","ft"],
+["aburrido/a","boring","ft"],["emocionante","exciting","ft"],
+["relajante","relaxing","ft"],["el fin de semana","weekend","ft"],
+["soler","to usually do","ft"],["quedar con","to meet up with","ft"],
+["disfrutar de","to enjoy","ft"],
+
+// -- INSTITUTO (sc) --
+["el instituto","secondary school","sc"],["la asignatura","subject","sc"],
+["las matemáticas","maths","sc"],["la historia","history","sc"],
+["la geografía","geography","sc"],["la química","chemistry","sc"],
+["la física","physics","sc"],["la biología","biology","sc"],
+["el inglés","English","sc"],["el arte","art","sc"],
+["la educación física","PE","sc"],["el recreo","break time","sc"],
+["los deberes","homework","sc"],["el examen","exam","sc"],
+["aprobar","to pass","sc"],["suspender","to fail","sc"],
+["sacar buenas notas","to get good grades","sc"],["el profesor","teacher (m)","sc"],
+["la profesora","teacher (f)","sc"],["el director","headteacher (m)","sc"],
+["el uniforme","uniform","sc"],["el aula","classroom","sc"],
+["el patio","playground","sc"],["la biblioteca","library","sc"],
+["el laboratorio","laboratory","sc"],["estudiar","to study","sc"],
+["aprender","to learn","sc"],["enseñar","to teach","sc"],
+["repasar","to revise","sc"],["el horario","timetable","sc"],
+["la nota","mark / grade","sc"],["difícil","difficult","sc"],
+["fácil","easy","sc"],["útil","useful","sc"],
+["estricto/a","strict","sc"],["el comportamiento","behaviour","sc"],
+
+// -- FUTURO Y TRABAJO (fu) --
+["el trabajo","job","fu"],["el empleo","employment","fu"],
+["ganar dinero","to earn money","fu"],["la carrera","career","fu"],
+["la universidad","university","fu"],["los estudios","studies","fu"],
+["el título","degree / qualification","fu"],["el médico","doctor","fu"],
+["el abogado","lawyer","fu"],["el ingeniero","engineer","fu"],
+["el enfermero","nurse","fu"],["el empresario","businessman","fu"],
+["trabajar","to work","fu"],["solicitar","to apply","fu"],
+["la entrevista","interview","fu"],["el sueldo","salary","fu"],
+["jubilarse","to retire","fu"],["tener éxito","to succeed","fu"],
+["el objetivo","goal","fu"],["el sueño","dream","fu"],
+["me gustaría","I would like","fu"],["espero","I hope","fu"],
+["tengo la intención de","I intend to","fu"],["en el futuro","in the future","fu"],
+["a corto plazo","short term","fu"],["a largo plazo","long term","fu"],
+["el autónomo","self-employed person","fu"],
+
+// -- MI CIUDAD (ht) --
+["el pueblo","village","ht"],["la ciudad","city","ht"],
+["el barrio","neighbourhood","ht"],["las afueras","outskirts","ht"],
+["el campo","countryside","ht"],["la costa","coast","ht"],
+["vivir","to live","ht"],["mudarse","to move house","ht"],
+["el piso","flat","ht"],["la casa","house","ht"],
+["el ayuntamiento","town hall","ht"],["la plaza","square","ht"],
+["la iglesia","church","ht"],["el mercado","market","ht"],
+["la tienda","shop","ht"],["el polideportivo","sports centre","ht"],
+["tranquilo/a","quiet","ht"],["ruidoso/a","noisy","ht"],
+["limpio/a","clean","ht"],["sucio/a","dirty","ht"],
+["seguro/a","safe","ht"],["peligroso/a","dangerous","ht"],
+["histórico/a","historic","ht"],["turístico/a","touristy","ht"],
+["hay que","one must","ht"],["faltan","there is a lack of","ht"],
+["mejorar","to improve","ht"],["construir","to build","ht"],
+["el transporte público","public transport","ht"],
+
+// -- VACACIONES (ho) --
+["las vacaciones","holidays","ho"],["viajar","to travel","ho"],
+["el viaje","trip","ho"],["el extranjero","abroad","ho"],
+["el vuelo","flight","ho"],["el aeropuerto","airport","ho"],
+["la maleta","suitcase","ho"],["el hotel","hotel","ho"],
+["el camping","campsite","ho"],["alojarse","to stay (accommodation)","ho"],
+["la reserva","booking","ho"],["la playa","beach","ho"],
+["la montaña","mountain","ho"],["tomar el sol","to sunbathe","ho"],
+["broncearse","to tan","ho"],["hacer turismo","to sightsee","ho"],
+["la excursión","excursion","ho"],["el crucero","cruise","ho"],
+["el pasaporte","passport","ho"],["la aduana","customs","ho"],
+["perder el vuelo","to miss the flight","ho"],["alquilar un coche","to hire a car","ho"],
+["el folleto","brochure","ho"],["inolvidable","unforgettable","ho"],
+["relajarse","to relax","ho"],["recorrer","to tour / travel around","ho"],
+
+// -- MEDIO AMBIENTE (en) --
+["el medio ambiente","environment","en"],["el cambio climático","climate change","en"],
+["la contaminación","pollution","en"],["reciclar","to recycle","en"],
+["proteger","to protect","en"],["la basura","rubbish","en"],
+["el calentamiento global","global warming","en"],["la energía renovable","renewable energy","en"],
+["ahorrar energía","to save energy","en"],["la deforestación","deforestation","en"],
+["la sequía","drought","en"],["la inundación","flood","en"],
+["la especie en peligro","endangered species","en"],["el desastre natural","natural disaster","en"],
+["la pobreza","poverty","en"],["el hambre","hunger","en"],
+["sin hogar","homeless","en"],["donar","to donate","en"],
+["la organización benéfica","charity","en"],["ayudar","to help","en"],
+["el voluntariado","volunteering","en"],["la desigualdad","inequality","en"],
+["el racismo","racism","en"],["la guerra","war","en"],
+["la paz","peace","en"],["los derechos humanos","human rights","en"],
+["concienciar","to raise awareness","en"],["el problema","problem","en"],
+["la solución","solution","en"],["sostenible","sustainable","en"],
+
+// -- TECNOLOGÍA (te) --
+["el móvil","mobile phone","te"],["el ordenador","computer","te"],
+["la aplicación","app","te"],["la pantalla","screen","te"],
+["enviar un mensaje","to send a message","te"],["subir fotos","to upload photos","te"],
+["la contraseña","password","te"],["el correo electrónico","email","te"],
+["navegar por internet","to browse the internet","te"],["el ciberacoso","cyberbullying","te"],
+["la seguridad","safety / security","te"],["la pantalla táctil","touchscreen","te"],
+["conectar","to connect","te"],["la wifi","wifi","te"],
+["grabar","to record","te"],["compartir","to share","te"],
+["el archivo","file","te"],["actualizar","to update","te"],
+["la tecnología","technology","te"],
+
+// -- COMIDA (fo) --
+["la comida","food","fo"],["el desayuno","breakfast","fo"],
+["el almuerzo","lunch","fo"],["la cena","dinner","fo"],
+["sano/a","healthy","fo"],["la dieta equilibrada","balanced diet","fo"],
+["las verduras","vegetables","fo"],["la fruta","fruit","fo"],
+["la carne","meat","fo"],["el pescado","fish","fo"],
+["los mariscos","seafood","fo"],["el postre","dessert","fo"],
+["el plato típico","typical dish","fo"],["la receta","recipe","fo"],
+["cocinar","to cook","fo"],["probar","to try (food)","fo"],
+["sabroso/a","tasty","fo"],["picante","spicy","fo"],
+["dulce","sweet","fo"],["salado/a","salty","fo"],
+["el restaurante","restaurant","fo"],["la cuenta","the bill","fo"],
+["pedir","to order","fo"],["el camarero","waiter","fo"],
+
+// -- SALUD (sa) --
+["la salud","health","sa"],["en forma","fit","sa"],
+["hacer ejercicio","to exercise","sa"],["la enfermedad","illness","sa"],
+["el dolor","pain","sa"],["me duele","it hurts me","sa"],
+["el hospital","hospital","sa"],["la farmacia","pharmacy","sa"],
+["fumar","to smoke","sa"],["el tabaco","tobacco","sa"],
+["el alcohol","alcohol","sa"],["las drogas","drugs","sa"],
+["evitar","to avoid","sa"],["descansar","to rest","sa"],
+["dormir","to sleep","sa"],["el estrés","stress","sa"],
+["llevar una vida sana","to lead a healthy lifestyle","sa"],
+
+// -- CONECTORES (co) --
+["y","and","co"],["pero","but","co"],
+["también","also","co"],["sin embargo","however","co"],
+["además","furthermore","co"],["porque","because","co"],
+["aunque","although","co"],["por eso","therefore","co"],
+["por otro lado","on the other hand","co"],["en mi opinión","in my opinion","co"],
+["creo que","I think that","co"],["me parece que","it seems to me that","co"],
+["a mi parecer","in my view","co"],["primero","firstly","co"],
+["luego","then","co"],["finalmente","finally","co"],
+["antes de","before","co"],["después de","after","co"],
+["mientras","while","co"],["cuando","when","co"],
+["como","as / like","co"],["para","in order to","co"],
+["tanto...como","both...and","co"],["al final","in the end","co"],
+
+// -- VERBOS COMUNES (ve) --
+["ser","to be","ve"],["estar","to be","ve"],
+["tener","to have","ve"],["hacer","to do / make","ve"],
+["ir","to go","ve"],["ver","to see","ve"],
+["dar","to give","ve"],["decir","to say","ve"],
+["poder","to be able to","ve"],["querer","to want","ve"],
+["saber","to know","ve"],["poner","to put","ve"],
+["salir","to go out","ve"],["venir","to come","ve"],
+["llegar","to arrive","ve"],["volver","to return","ve"],
+["empezar","to begin","ve"],["terminar","to finish","ve"],
+["buscar","to look for","ve"],["encontrar","to find","ve"],
+["sentir","to feel","ve"],["pensar","to think","ve"],
+["creer","to believe","ve"],["necesitar","to need","ve"],
+["deber","to have to / must","ve"],["gustar","to like","ve"],
+["encantar","to love","ve"],["odiar","to hate","ve"],
+["preferir","to prefer","ve"],["interesar","to interest","ve"]
+].map(([es,en,topic],i)=>({id:topic+"_"+i, es, en, topic}));
+
+/* =========================================================
+   PROGRESS STORE (Leitner boxes 1-5, localStorage)
+   ========================================================= */
+const STORAGE_KEY = "gcse-es-progress-v1";
+const STREAK_KEY = "gcse-es-streak-v1";
+const BOX_INTERVAL_DAYS = {1:0, 2:1, 3:3, 4:7, 5:16};
+
+function loadProgress(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveProgress(p){ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+let progress = loadProgress();
+
+function getWordState(id){
+  return progress[id] || {box:1, due:0, seen:0};
+}
+function updateWordState(id, correct){
+  const s = getWordState(id);
+  s.seen = (s.seen||0) + 1;
+  if(correct){ s.box = Math.min(5, s.box+1); }
+  else{ s.box = 1; }
+  const days = BOX_INTERVAL_DAYS[s.box] || 0;
+  s.due = Date.now() + days*24*60*60*1000;
+  progress[id] = s;
+  saveProgress(progress);
+}
+
+function touchStreak(){
+  const today = new Date().toDateString();
+  let st = JSON.parse(localStorage.getItem(STREAK_KEY) || '{"last":null,"count":0}');
+  if(st.last === today) return st.count;
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  st.count = (st.last === yesterday) ? st.count+1 : 1;
+  st.last = today;
+  localStorage.setItem(STREAK_KEY, JSON.stringify(st));
+  return st.count;
+}
+function currentStreak(){
+  const st = JSON.parse(localStorage.getItem(STREAK_KEY) || '{"last":null,"count":0}');
+  return st.count || 0;
+}
+
+/* =========================================================
+   SETUP STATE
+   ========================================================= */
+let selectedTopics = new Set(Object.keys(TOPICS));
+let direction = "mixed";
+let mode = "choice";
+let sessionLength = 15;
+
+function topicWordCount(code){ return VOCAB.filter(w=>w.topic===code).length; }
+function topicMasteredCount(code){
+  return VOCAB.filter(w=>w.topic===code && getWordState(w.id).box>=4).length;
+}
+
+function renderTopicGrid(){
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = "";
+  Object.keys(TOPICS).forEach(code=>{
+    const total = topicWordCount(code);
+    const mastered = topicMasteredCount(code);
+    const div = document.createElement('div');
+    div.className = 'topic-chip' + (selectedTopics.has(code) ? ' on' : '');
+    const dotClass = mastered===total && total>0 ? 'box45' : (mastered>0 ? 'box23' : 'box1');
+    div.innerHTML = `<span class="topic-row-left"><span class="mastery-dot ${dotClass}"></span>
+      <span class="name">${TOPICS[code].name}</span></span>
+      <span class="count">${mastered}/${total}</span>`;
+    div.onclick = ()=>{
+      if(selectedTopics.has(code)) selectedTopics.delete(code); else selectedTopics.add(code);
+      renderTopicGrid();
+    };
+    grid.appendChild(div);
+  });
+}
+function selectAllTopics(all){
+  selectedTopics = new Set(all ? Object.keys(TOPICS) : []);
+  renderTopicGrid();
+}
+
+function setupOptionGroup(gridId, onPick){
+  document.getElementById(gridId).querySelectorAll('.option-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      document.getElementById(gridId).querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      onPick(btn.dataset.val);
+    };
+  });
+}
+setupOptionGroup('directionGrid', v=>direction=v);
+setupOptionGroup('modeGrid', v=>mode=v);
+setupOptionGroup('lengthGrid', v=>sessionLength=parseInt(v));
+
+function updateHeaderStat(){
+  const mastered = VOCAB.filter(w=>getWordState(w.id).box>=4).length;
+  document.getElementById('headerStat').textContent = `${mastered}/${VOCAB.length} palabras dominadas`;
+}
+
+/* =========================================================
+   SESSION
+   ========================================================= */
+let session = {queue:[], index:0, correct:0, dir:"es-en"};
+
+function buildSessionQueue(){
+  const now = Date.now();
+  let pool = VOCAB.filter(w=>selectedTopics.has(w.topic));
+  if(pool.length===0) pool = VOCAB.slice();
+  const due = pool.filter(w=>{ const s=getWordState(w.id); return s.due<=now; });
+  const notDue = pool.filter(w=>{ const s=getWordState(w.id); return s.due>now; });
+  due.sort((a,b)=> getWordState(a.id).box - getWordState(b.id).box);
+  shuffle(due); shuffle(notDue);
+  const queue = due.concat(notDue).slice(0, sessionLength);
+  shuffle(queue);
+  return queue;
+}
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr;
+}
+function pickDirection(){
+  if(direction==="mixed") return Math.random()<0.5 ? "es-en" : "en-es";
+  return direction;
+}
+function distractorsFor(word, n){
+  const sameTopic = VOCAB.filter(w=>w.topic===word.topic && w.id!==word.id);
+  const rest = VOCAB.filter(w=>w.topic!==word.topic && w.id!==word.id);
+  shuffle(sameTopic); shuffle(rest);
+  return sameTopic.concat(rest).slice(0,n);
+}
+
+function startSession(){
+  if(selectedTopics.size===0){ alert("Elige al menos un tema."); return; }
+  session.queue = buildSessionQueue();
+  session.index = 0;
+  session.correct = 0;
+  if(session.queue.length===0){ alert("No hay palabras en los temas seleccionados."); return; }
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+function backToSetup(){ renderTopicGrid(); updateHeaderStat(); showScreen('setup'); }
+
+function renderQuestion(){
+  const w = session.queue[session.index];
+  session.dir = pickDirection();
+  document.getElementById('progressFill').style.width = (100*session.index/session.queue.length)+"%";
+  document.getElementById('quizTopicTag').textContent = TOPICS[w.topic].name;
+  document.getElementById('feedbackLine').textContent = "";
+  document.getElementById('feedbackLine').className = "feedback-line";
+
+  const promptArea = document.getElementById('promptArea');
+  const answerArea = document.getElementById('answerArea');
+  const front = session.dir==="es-en" ? w.es : w.en;
+  const back = session.dir==="es-en" ? w.en : w.es;
+
+  if(mode==="choice"){
+    promptArea.innerHTML = `<div class="prompt-card">
+        ${session.dir==="es-en" ? `<button class="audio-btn" onclick="speak('${escapeAttr(w.es)}')">🔊</button>` : ""}
+        <div class="prompt-word">${front}</div>
+        <div class="prompt-hint">${session.dir==="es-en" ? "¿Qué significa?" : "¿Cómo se dice en español?"}</div>
+      </div>`;
+    const opts = shuffle([w].concat(distractorsFor(w,3)));
+    answerArea.innerHTML = `<div class="answer-options">` + opts.map(o=>{
+      const label = session.dir==="es-en" ? o.en : o.es;
+      return `<button class="answer-opt" onclick="answerChoice(this,'${o.id}','${w.id}')">${label}</button>`;
+    }).join('') + `</div>`;
+
+  } else if(mode==="listen"){
+    promptArea.innerHTML = `<div class="prompt-card">
+        <button class="audio-btn" onclick="speak('${escapeAttr(w.es)}')" style="position:static;margin:0 auto 10px;display:flex;">🔊</button>
+        <div class="prompt-word" style="font-size:1.1rem;color:var(--ink-soft);">Escucha la palabra</div>
+        <div class="prompt-hint">Pulsa para reproducir de nuevo</div>
+      </div>`;
+    setTimeout(()=>speak(w.es), 250);
+    const opts = shuffle([w].concat(distractorsFor(w,3)));
+    answerArea.innerHTML = `<div class="answer-options">` + opts.map(o=>
+      `<button class="answer-opt" onclick="answerChoice(this,'${o.id}','${w.id}')">${o.en}</button>`
+    ).join('') + `</div>`;
+
+  } else if(mode==="typing"){
+    promptArea.innerHTML = `<div class="prompt-card">
+        ${session.dir==="es-en" ? `<button class="audio-btn" onclick="speak('${escapeAttr(w.es)}')">🔊</button>` : ""}
+        <div class="prompt-word">${front}</div>
+        <div class="prompt-hint">Escribe la traducción</div>
+      </div>`;
+    answerArea.innerHTML = `<div class="type-row">
+        <input type="text" id="typeInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tu respuesta...">
+        <button class="big-btn" style="width:auto;padding:14px 20px;" onclick="answerTyping('${w.id}','${escapeAttr(back)}')">Comprobar</button>
+      </div>`;
+    const inp = document.getElementById('typeInput');
+    inp.focus();
+    inp.addEventListener('keydown', e=>{ if(e.key==="Enter") answerTyping(w.id, back); });
+
+  } else if(mode==="flash"){
+    promptArea.innerHTML = `<div class="flash-card" id="flashCard" onclick="flipCard()">
+        <div class="flash-face" id="flashFace">${front}</div>
+        <div class="flash-sub">Toca para ver la traducción</div>
+      </div>`;
+    answerArea.innerHTML = `<div class="grade-row" id="gradeRow" style="display:none;">
+        <button class="grade-again" onclick="answerFlash('${w.id}', false)">Aún aprendiendo</button>
+        <button class="grade-good" onclick="answerFlash('${w.id}', true)">Lo sabía</button>
+      </div>`;
+    window._flashFront = front; window._flashBack = back; window._flashFlipped=false;
+  }
+}
+
+function escapeAttr(s){ return s.replace(/'/g,"\\'"); }
+
+function flipCard(){
+  window._flashFlipped = true;
+  document.getElementById('flashFace').textContent = window._flashBack;
+  document.querySelector('.flash-sub').textContent = "";
+  document.getElementById('gradeRow').style.display = 'flex';
+}
+function answerFlash(id, correct){
+  updateWordState(id, correct);
+  if(correct) session.correct++;
+  advance();
+}
+
+function answerChoice(btn, chosenId, correctId){
+  const buttons = document.querySelectorAll('.answer-opt');
+  buttons.forEach(b=>b.disabled = true);
+  const correct = chosenId === correctId;
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if(!correct){
+    buttons.forEach(b=>{ if(b.onclick.toString().includes(correctId)) b.classList.add('correct'); });
+  }
+  const fb = document.getElementById('feedbackLine');
+  fb.textContent = correct ? "¡Correcto!" : "Incorrecto — mira la respuesta correcta arriba.";
+  fb.className = "feedback-line " + (correct?"correct":"wrong");
+  updateWordState(correctId, correct);
+  if(correct) session.correct++;
+  setTimeout(advance, correct ? 700 : 1500);
+}
+
+function normalize(s){
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g,"").trim();
+}
+function answerTyping(wordId, correctBack){
+  const inp = document.getElementById('typeInput');
+  if(!inp || inp.disabled) return;
+  const val = inp.value;
+  const norm = normalize(val);
+  const correctNorms = correctBack.split(/\s*\/\s*|\s+or\s+/i).map(normalize);
+  const correct = correctNorms.some(c=> c===norm || (norm.length>2 && (c.includes(norm)||norm.includes(c))));
+  inp.disabled = true;
+  inp.classList.add(correct?'correct':'wrong');
+  const fb = document.getElementById('feedbackLine');
+  const accentNote = correct && val && normalize(val)!==val.toLowerCase().trim() ? "" : "";
+  fb.textContent = correct ? "¡Correcto!" : `Incorrecto — la respuesta es: ${correctBack}`;
+  fb.className = "feedback-line " + (correct?"correct":"wrong");
+  updateWordState(wordId, correct);
+  if(correct) session.correct++;
+  setTimeout(advance, correct ? 700 : 1800);
+}
+
+function advance(){
+  session.index++;
+  if(session.index >= session.queue.length){ finishSession(); }
+  else{ renderQuestion(); }
+}
+
+function finishSession(){
+  const streak = touchStreak();
+  document.getElementById('sumCorrect').textContent = session.correct;
+  document.getElementById('sumTotal').textContent = session.queue.length;
+  document.getElementById('sumStreak').textContent = streak;
+  const pct = Math.round(100*session.correct/session.queue.length);
+  document.getElementById('sealText').innerHTML = pct>=80 ? "¡SESIÓN<br>COMPLETA!" : "SESIÓN<br>COMPLETA";
+  showScreen('complete');
+}
+
+/* =========================================================
+   AUDIO — speechSynthesis (playback) + speechRecognition (bonus)
+   ========================================================= */
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = 0.92;
+  const voices = speechSynthesis.getVoices();
+  const esVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(esVoice) u.voice = esVoice;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged = ()=>{}; }
+
+/* =========================================================
+   STATS SCREEN
+   ========================================================= */
+function showStats(){
+  const list = document.getElementById('statsTopicList');
+  list.innerHTML = "";
+  let newC=0, learnC=0, masterC=0;
+  Object.keys(TOPICS).forEach(code=>{
+    const words = VOCAB.filter(w=>w.topic===code);
+    let n=0,l=0,m=0;
+    words.forEach(w=>{
+      const box = getWordState(w.id).box;
+      const seen = getWordState(w.id).seen;
+      if(!seen){ n++; } else if(box>=4){ m++; } else { l++; }
+    });
+    newC+=n; learnC+=l; masterC+=m;
+    const total = words.length;
+    const row = document.createElement('div');
+    row.className = 'stat-topic-row';
+    row.innerHTML = `<div class="name">${TOPICS[code].name}</div>
+      <div class="bar-track">
+        <div class="bar-seg" style="width:${100*m/total}%;background:var(--olive);"></div>
+        <div class="bar-seg" style="width:${100*l/total}%;background:var(--ochre);"></div>
+        <div class="bar-seg" style="width:${100*n/total}%;background:var(--paper-dim);"></div>
+      </div>
+      <div class="pct">${m}/${total}</div>
+      ${l>0 ? `<div class="learning-note">+${l} en curso</div>` : ''}`;
+    list.appendChild(row);
+  });
+  document.getElementById('statNew').textContent = newC;
+  document.getElementById('statLearning').textContent = learnC;
+  document.getElementById('statMastered').textContent = masterC;
+  showScreen('stats');
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+renderTopicGrid();
+updateHeaderStat();
+</script>
+</body>
+</html>
